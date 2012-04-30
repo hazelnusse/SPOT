@@ -12,7 +12,7 @@ class StudentWidget: public QWidget
 {
     Q_OBJECT
 public:
-    explicit StudentWidget(QButtonGroup *group, QWidget *parent = 0);
+    explicit StudentWidget(int rows, int cols, QButtonGroup *group, QWidget *parent = 0);
     void setButtonGroup(QButtonGroup & group);
 
 signals:

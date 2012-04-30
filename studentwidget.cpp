@@ -12,10 +12,9 @@
 QString formText(StudentButton::interaction_t i, int Q, int C, int P);
 
 
-StudentWidget::StudentWidget(QButtonGroup *group, QWidget *parent) :
+StudentWidget::StudentWidget(int rows, int cols, QButtonGroup *group, QWidget *parent) :
     QWidget(parent), group_(group)
 {
-    int rows(7), cols(5);
     grid = new QGridLayout(this);
 
     QSizePolicy sizepolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -25,6 +24,7 @@ StudentWidget::StudentWidget(QButtonGroup *group, QWidget *parent) :
             StudentButton *b = new StudentButton(i, j, this);
             b->setCheckable(true);
             b->setSizePolicy(sizepolicy);
+            b->SetCurrentInteraction(StudentButton::Idle);
             connect(b, SIGNAL(clicked()), this, SLOT(StudentButtonClicked()));
             grid->addWidget(b, i, j, 1, 1);
             group_->addButton(b, 3 + i*cols + j);
@@ -58,37 +58,37 @@ void StudentWidget::StudentButtonClicked()
     case 1:
         if (currentStudent->currentInteraction() != StudentButton::Questioning) {
             currentStudent->IncrementCount(StudentButton::Questioning);
-            currentStudent->SetCurrentInteraction(StudentButton::Questioning);
+            emit Interaction("SQ" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
         }
+        currentStudent->SetCurrentInteraction(StudentButton::Questioning);
         currentStudent->setText(formText(StudentButton::Questioning,
                                          currentStudent->QuestioningCount(),
                                          currentStudent->ContributingCount(),
                                          currentStudent->PresentingCount()));
-        emit Interaction("SQ" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
         emit SelectedStudent(currentStudent);
         break;
     case 2:
         if (currentStudent->currentInteraction() != StudentButton::Contributing) {
             currentStudent->IncrementCount(StudentButton::Contributing);
-            currentStudent->SetCurrentInteraction(StudentButton::Contributing);
+            emit Interaction("SC" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
         }
+        currentStudent->SetCurrentInteraction(StudentButton::Contributing);
         currentStudent->setText(formText(StudentButton::Contributing,
                                          currentStudent->QuestioningCount(),
                                          currentStudent->ContributingCount(),
                                          currentStudent->PresentingCount()));
-        emit Interaction("SC" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
         emit SelectedStudent(currentStudent);
         break;
     case 3:
         if (currentStudent->currentInteraction() != StudentButton::Presenting) {
             currentStudent->IncrementCount(StudentButton::Presenting);
-            currentStudent->SetCurrentInteraction(StudentButton::Presenting);
+            emit Interaction("SP" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
         }
+        currentStudent->SetCurrentInteraction(StudentButton::Presenting);
         currentStudent->setText(formText(StudentButton::Presenting,
                                          currentStudent->QuestioningCount(),
                                          currentStudent->ContributingCount(),
                                          currentStudent->PresentingCount()));
-        emit Interaction("SP" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
         emit SelectedStudent(currentStudent);
         break;
     }

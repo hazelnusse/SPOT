@@ -13,7 +13,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     studentwidget.cpp \
-    mainwidget.cpp \
     timestampednote.cpp \
     studentbutton.cpp \
     studentdialog.cpp \
@@ -22,7 +21,6 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     studentwidget.h \
-    mainwidget.h \
     timestampednote.h \
     studentbutton.h \
     studentdialog.h \

@@ -18,9 +18,10 @@ public:
     void SetCurrentInteraction(interaction_t t) { currentInteraction_ = t; }
 
 private:
-    interaction_t currentInteraction_;
     int row_, column_;
     int numQ, numC, numP;
+    interaction_t currentInteraction_;
+
 };
 
 #endif // STUDENTBUTTON_H

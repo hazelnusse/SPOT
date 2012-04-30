@@ -17,6 +17,9 @@ private slots:
     void Waiting();
     void Administrative();
 
+public slots:
+  virtual void reject();
+
 private:
     QPushButton *ExplainingButton, *QuestioningButton, *WaitingButton, *AdministrativeButton;
 };

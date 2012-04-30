@@ -44,6 +44,10 @@ void MainWindow::Connect()
                    this, SLOT(RecordInteraction(const QString &)));
   QObject::connect(studentWidget, SIGNAL(SelectedStudent(QPushButton*)),
                    this, SLOT(StudentButtonSelected(QPushButton*)));
+
+  QObject::connect(teacherButton, SIGNAL(clicked()), this->studentWidget, SLOT(UnselectStudent()));
+  QObject::connect(groupButton, SIGNAL(clicked()), this->studentWidget, SLOT(UnselectStudent()));
+  QObject::connect(individualButton, SIGNAL(clicked()), this->studentWidget, SLOT(UnselectStudent()));
 }
 
 void MainWindow::Setup()
@@ -153,13 +157,6 @@ void MainWindow::TeacherButtonClicked()
     TeacherDialog *d = new TeacherDialog(this);
     int rv = d->exec();
     switch (rv) {
-    case 0:  // Dialog cancelled
-        personButtons->removeButton(teacherButton);
-        teacherButton->setChecked(false);
-        personButtons->addButton(teacherButton, 0);
-        if (currentInteractionButton)
-            currentInteractionButton->setChecked(true);
-        break;
     case 1:
         emit Interaction("TE");
         currentInteractionButton = teacherButton;

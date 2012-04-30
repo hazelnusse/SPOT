@@ -11,14 +11,12 @@ StudentDialog::StudentDialog(QWidget *parent)
     PresentingButton = new QPushButton(tr("&Presenting"));
     connect(PresentingButton, SIGNAL(clicked()), this, SLOT(Presenting()));
 
-
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(QuestioningButton);
     layout->addWidget(ContributingButton);
     layout->addWidget(PresentingButton);
 
     setLayout(layout);
-
 }
 
 void StudentDialog::Questioning()
@@ -34,4 +32,9 @@ void StudentDialog::Contributing()
 void StudentDialog::Presenting()
 {
     done(3);
+}
+
+void StudentDialog::reject()
+{
+
 }

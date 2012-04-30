@@ -11,6 +11,9 @@ class StudentDialog : public QDialog
 public:
     StudentDialog(QWidget *parent = 0);
 
+public slots:
+    virtual void reject();
+
 private slots:
     void Questioning();
     void Contributing();

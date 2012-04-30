@@ -20,8 +20,13 @@ signals:
     void Note(const QString &note);
     void SelectedStudent(QPushButton *selected);
 
+public slots:
+  void UnselectStudent();
+
+
 private slots:
     void StudentButtonClicked();
+
 private:
     QButtonGroup *group_;
     QGridLayout *grid;

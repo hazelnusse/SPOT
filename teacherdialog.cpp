@@ -44,3 +44,9 @@ void TeacherDialog::Administrative()
 {
     done(4);
 }
+
+
+void TeacherDialog::reject()
+{
+
+}

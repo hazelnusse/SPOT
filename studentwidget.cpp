@@ -8,6 +8,7 @@
 #include "studentbutton.h"
 #include "studentwidget.h"
 #include "studentdialog.h"
+#include "mainwindow.h"
 
 QString formText(StudentButton::interaction_t i, int Q, int C, int P);
 
@@ -35,70 +36,58 @@ StudentWidget::StudentWidget(int rows, int cols, QButtonGroup *group, QWidget *p
 
 void StudentWidget::StudentButtonClicked()
 {
-    StudentButton *tmp = previousStudent;  // Save just in case we need to revert
-    previousStudent = currentStudent;
-    currentStudent = static_cast<StudentButton *>(sender());
+  previousStudent = currentStudent;
+  currentStudent = static_cast<StudentButton *>(sender());
+  MainWindow *mw = static_cast<MainWindow *>(parent());
 
-    StudentDialog *d = new StudentDialog(this);
-    int rv = d->exec();
-    switch (rv) {
-    case 0: // Dialog cancelled
-        // The next three lines are a little hack to allow the button to be unselected from the buttonGroup.
-        group_->removeButton(currentStudent);
-        currentStudent->setChecked(false);
-        group_->addButton(currentStudent, 3 + currentStudent->Row()*5 + currentStudent->Column());
+  StudentDialog *d = new StudentDialog(this);
+  int rv = d->exec();
+  switch (rv) {
+  case 1:
+      if (mw->currentButton() != currentStudent) {
+          currentStudent->IncrementCount(StudentButton::Questioning);
+          emit Interaction("SQ" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
+      }
+      currentStudent->SetCurrentInteraction(StudentButton::Questioning);
+      currentStudent->setText(formText(StudentButton::Questioning,
+                                       currentStudent->QuestioningCount(),
+                                       currentStudent->ContributingCount(),
+                                       currentStudent->PresentingCount()));
+      emit SelectedStudent(currentStudent);
+      break;
+  case 2:
+      if (mw->currentButton() != currentStudent) {
+          currentStudent->IncrementCount(StudentButton::Contributing);
+          emit Interaction("SC" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
+      }
+      currentStudent->SetCurrentInteraction(StudentButton::Contributing);
+      currentStudent->setText(formText(StudentButton::Contributing,
+                                       currentStudent->QuestioningCount(),
+                                       currentStudent->ContributingCount(),
+                                       currentStudent->PresentingCount()));
+      emit SelectedStudent(currentStudent);
+      break;
+  case 3:
+      if (mw->currentButton() != currentStudent) {
+          currentStudent->IncrementCount(StudentButton::Presenting);
+          emit Interaction("SP" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
+      }
+      currentStudent->SetCurrentInteraction(StudentButton::Presenting);
+      currentStudent->setText(formText(StudentButton::Presenting,
+                                       currentStudent->QuestioningCount(),
+                                       currentStudent->ContributingCount(),
+                                       currentStudent->PresentingCount()));
+      emit SelectedStudent(currentStudent);
+      break;
+  }
 
-        // Now we want to make sure the previously selected button is checked.
-        currentStudent = previousStudent;
-        if (previousStudent) {
-            previousStudent->setChecked(true);
-        }
-        previousStudent = tmp;
-        break;
-    case 1:
-        if (currentStudent->currentInteraction() != StudentButton::Questioning) {
-            currentStudent->IncrementCount(StudentButton::Questioning);
-            emit Interaction("SQ" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
-        }
-        currentStudent->SetCurrentInteraction(StudentButton::Questioning);
-        currentStudent->setText(formText(StudentButton::Questioning,
-                                         currentStudent->QuestioningCount(),
-                                         currentStudent->ContributingCount(),
-                                         currentStudent->PresentingCount()));
-        emit SelectedStudent(currentStudent);
-        break;
-    case 2:
-        if (currentStudent->currentInteraction() != StudentButton::Contributing) {
-            currentStudent->IncrementCount(StudentButton::Contributing);
-            emit Interaction("SC" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
-        }
-        currentStudent->SetCurrentInteraction(StudentButton::Contributing);
-        currentStudent->setText(formText(StudentButton::Contributing,
-                                         currentStudent->QuestioningCount(),
-                                         currentStudent->ContributingCount(),
-                                         currentStudent->PresentingCount()));
-        emit SelectedStudent(currentStudent);
-        break;
-    case 3:
-        if (currentStudent->currentInteraction() != StudentButton::Presenting) {
-            currentStudent->IncrementCount(StudentButton::Presenting);
-            emit Interaction("SP" + QString::number(currentStudent->Row()) + QString::number(currentStudent->Column()));
-        }
-        currentStudent->SetCurrentInteraction(StudentButton::Presenting);
-        currentStudent->setText(formText(StudentButton::Presenting,
-                                         currentStudent->QuestioningCount(),
-                                         currentStudent->ContributingCount(),
-                                         currentStudent->PresentingCount()));
-        emit SelectedStudent(currentStudent);
-        break;
-    }
-
-    if (previousStudent && (previousStudent != currentStudent)) {
-        previousStudent->setText(formText(StudentButton::Idle,
-                                          previousStudent->QuestioningCount(),
-                                          previousStudent->ContributingCount(),
-                                          previousStudent->PresentingCount()));
-    }
+  if (previousStudent && (previousStudent != currentStudent)) {
+      previousStudent->setText(formText(StudentButton::Idle,
+                                        previousStudent->QuestioningCount(),
+                                        previousStudent->ContributingCount(),
+                                        previousStudent->PresentingCount()));
+      previousStudent->SetCurrentInteraction(StudentButton::Idle);
+  }
 
 }
 
@@ -119,4 +108,16 @@ QString formText(StudentButton::interaction_t i, int Q, int C, int P)
     }
     //return text + "Q:" + QString::number(Q) + "C:" + QString::number(C) + "P:" + QString::number(P);
     return text + QString::number(Q+C+P);
+}
+
+
+void StudentWidget::UnselectStudent()
+{
+  if (currentStudent) {
+    currentStudent->setText(formText(StudentButton::Idle,
+                                      currentStudent->QuestioningCount(),
+                                      currentStudent->ContributingCount(),
+                                      currentStudent->PresentingCount()));
+  }
+  currentStudent = NULL;
 }

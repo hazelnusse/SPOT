@@ -166,10 +166,14 @@ void MainWindow::TeacherButtonClicked()
         currentInteractionButton = teacherButton;
         break;
     case 3:
-        emit Interaction("TW");
+        emit Interaction("TR");
         currentInteractionButton = teacherButton;
         break;
     case 4:
+        emit Interaction("TW");
+        currentInteractionButton = teacherButton;
+        break;
+    case 5:
         emit Interaction("TA");
         currentInteractionButton = teacherButton;
         break;

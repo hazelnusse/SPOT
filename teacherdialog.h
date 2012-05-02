@@ -14,6 +14,7 @@ public:
 private slots:
     void Explaining();
     void Questioning();
+    void Responding();
     void Waiting();
     void Administrative();
 
@@ -21,7 +22,7 @@ public slots:
   virtual void reject();
 
 private:
-    QPushButton *ExplainingButton, *QuestioningButton, *WaitingButton, *AdministrativeButton;
+    QPushButton *ExplainingButton, *QuestioningButton, *RespondingButton, *WaitingButton, *AdministrativeButton;
 };
 
 #endif // TEACHERDIALOG_H

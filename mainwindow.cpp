@@ -1,5 +1,5 @@
-// #include "mainwidget.h"
 #include "mainwindow.h"
+#include "allstudentsdialog.h"
 #include "studentwidget.h"
 #include "timestampednote.h"
 #include "teacherdialog.h"
@@ -47,7 +47,7 @@ void MainWindow::Connect()
 
   QObject::connect(teacherButton, SIGNAL(clicked()), this->studentWidget, SLOT(UnselectStudent()));
   QObject::connect(groupButton, SIGNAL(clicked()), this->studentWidget, SLOT(UnselectStudent()));
-  QObject::connect(individualButton, SIGNAL(clicked()), this->studentWidget, SLOT(UnselectStudent()));
+  QObject::connect(allstudentsButton, SIGNAL(clicked()), this->studentWidget, SLOT(UnselectStudent()));
 }
 
 void MainWindow::Setup()
@@ -86,23 +86,23 @@ void MainWindow::Populate()
     groupButton->setCheckable(true);
     QObject::connect(groupButton, SIGNAL(clicked()), this, SLOT(GroupButtonClicked()));
 
-    individualButton = new QPushButton(tr("&Individual"), this);
-    individualButton->setCheckable(true);
-    QObject::connect(individualButton, SIGNAL(clicked()), this, SLOT(IndividualButtonClicked()));
+    allstudentsButton = new QPushButton(tr("&All Students"), this);
+    allstudentsButton->setCheckable(true);
+    QObject::connect(allstudentsButton, SIGNAL(clicked()), this, SLOT(AllStudentsButtonClicked()));
 
     QGroupBox *personSelectionBox = new QGroupBox;
     personSelectionBox->setFlat(true);
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addWidget(teacherButton);
     hbox->addWidget(groupButton);
-    hbox->addWidget(individualButton);
+    hbox->addWidget(allstudentsButton);
     personSelectionBox->setLayout(hbox);
 
     // Add Buttons to ButtonGroup manager to ensure exclusivity.
     personButtons = new QButtonGroup(this);
     personButtons->addButton(teacherButton, 0);
     personButtons->addButton(groupButton, 1);
-    personButtons->addButton(individualButton, 2);
+    personButtons->addButton(allstudentsButton, 2);
 
     // Pop up the dialog to obtain: rows, columns, filename prefix
     ConfigurationDialog *d = new ConfigurationDialog;
@@ -184,10 +184,22 @@ void MainWindow::GroupButtonClicked()
     currentInteractionButton = groupButton;
 }
 
-void MainWindow::IndividualButtonClicked()
+void MainWindow::AllStudentsButtonClicked()
 {
-    emit Interaction("I");
-    currentInteractionButton = individualButton;
+  AllStudentsDialog *d = new AllStudentsDialog(this);
+  int rv = d->exec();
+  switch (rv) {
+    case 1:
+      emit Interaction("AR");
+      currentInteractionButton = allstudentsButton;
+      break;
+    case 2:
+      emit Interaction("AI");
+      currentInteractionButton = allstudentsButton;
+      break;
+    default:
+      break;
+  }
 }
 
 void MainWindow::StudentButtonSelected(QPushButton * selected)

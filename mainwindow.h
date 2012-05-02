@@ -29,7 +29,7 @@ public slots:
   void addNoteListItem();
   void TeacherButtonClicked();
   void GroupButtonClicked();
-  void IndividualButtonClicked();
+  void AllStudentsButtonClicked();
   void StudentButtonSelected(QPushButton *selected);
   void RecordInteraction(const QString &interaction);
   void RecordNote(const QString &interaction);
@@ -47,7 +47,7 @@ private:
   // Teacher button
   QPushButton *teacherButton;
   // Bottom Right Buttons
-  QPushButton *groupButton, *individualButton;
+  QPushButton *groupButton, *allstudentsButton;
   // Group to manage exclusivity of Bottom Right Buttons and Student Buttons
   QButtonGroup *personButtons;
   QPushButton *currentInteractionButton;

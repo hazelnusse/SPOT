@@ -15,6 +15,7 @@ SOURCES += main.cpp\
     studentwidget.cpp \
     timestampednote.cpp \
     studentbutton.cpp \
+    allstudentsdialog.cpp \
     studentdialog.cpp \
     teacherdialog.cpp \
     configurationdialog.cpp
@@ -23,6 +24,7 @@ HEADERS  += mainwindow.h \
     studentwidget.h \
     timestampednote.h \
     studentbutton.h \
+    allstudentsdialog.h \
     studentdialog.h \
     teacherdialog.h \
     configurationdialog.h

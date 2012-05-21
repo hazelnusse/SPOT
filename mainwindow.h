@@ -12,6 +12,7 @@ class StudentWidget;
 class QLineEdit;
 class QFile;
 class QCloseEvent;
+class QTime;
 
 class MainWindow : public QMainWindow
 {
@@ -62,5 +63,9 @@ private:
   QLineEdit *lineedit;
 
   QFile *interactionFile, *notesFile;
+
+  // To store the time
+  bool initialInteraction;
+  QTime *t;
 };
 #endif // MAINWINDOW_H

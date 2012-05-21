@@ -4,6 +4,7 @@
 #include "timestampednote.h"
 #include "teacherdialog.h"
 #include "configurationdialog.h"
+#include "closedialog.h"
 
 #include <QTime>
 #include <QFile>
@@ -56,6 +57,8 @@ void MainWindow::Setup()
     currentInteractionButton = NULL;
     interactionFile = new QFile(this);
     notesFile = new QFile(this);
+    t = new QTime;
+    initialInteraction = true;
 }
 
 void MainWindow::Populate()
@@ -133,17 +136,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::addNoteListItem()
 {
-    notes->append(TimeStampedNote(QTime::currentTime().toString(),
-                                  lineedit->text()));
-    notesListWidget->addItem(notes->back().toString());
-    RecordNote(notes->back().toString());
-    lineedit->clear();
+  if (initialInteraction) {
+    initialInteraction = false;
+    t->start();
+  }
+
+  notes->append(TimeStampedNote(t->elapsed(),
+                                lineedit->text()));
+  notesListWidget->addItem(notes->back().toString());
+  RecordNote(notes->back().toString(TimeStampedNote::ms));
+  lineedit->clear();
 }
 
 void MainWindow::RecordInteraction(const QString &interaction)
 {
+  if (initialInteraction) {
+    initialInteraction = false;
+    t->start();
+  }
   QTextStream s(interactionFile);
-  s << QTime::currentTime().toString() + " " + interaction << '\n';
+  s << QString::number(t->elapsed()) + ":" + interaction << '\n';
 }
 
 void MainWindow::RecordNote(const QString &interaction)
@@ -184,7 +196,7 @@ void MainWindow::TeacherButtonClicked()
 
 void MainWindow::GroupButtonClicked()
 {
-    emit Interaction("G");
+    emit Interaction("Gx");
     currentInteractionButton = groupButton;
 }
 
@@ -218,9 +230,7 @@ QPushButton *MainWindow::currentButton()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-  QMessageBox box;
-  box.setText("Data has been saved to <ul><li>" + notesFile->fileName()
-        + "</li><li>" +  interactionFile->fileName() + "</li></ul>");
-  box.exec();
-  event->accept();
+  CloseDialog *cd = new CloseDialog(notesFile->fileName(), interactionFile->fileName(), this);
+  int num = cd->exec();
+  emit Interaction("Program closed\n# Total number of student: " + QString::number(num));
 }

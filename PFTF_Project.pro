@@ -11,14 +11,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    studentwidget.cpp \
-    timestampednote.cpp \
-    studentbutton.cpp \
-    allstudentsdialog.cpp \
-    studentdialog.cpp \
-    teacherdialog.cpp \
-    configurationdialog.cpp
+      mainwindow.cpp \
+      studentwidget.cpp \
+      timestampednote.cpp \
+      studentbutton.cpp \
+      allstudentsdialog.cpp \
+      studentdialog.cpp \
+      teacherdialog.cpp \
+      configurationdialog.cpp \
+      closedialog.cpp
 
 HEADERS  += mainwindow.h \
     studentwidget.h \
@@ -27,4 +28,5 @@ HEADERS  += mainwindow.h \
     allstudentsdialog.h \
     studentdialog.h \
     teacherdialog.h \
-    configurationdialog.h
+    configurationdialog.h \
+    closedialog.h

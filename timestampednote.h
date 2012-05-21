@@ -5,10 +5,11 @@
 class TimeStampedNote
 {
 public:
-    TimeStampedNote(const QString &Time, const QString &Note);
-    QString toString() {return Time_ + ": " + Note_;}
+  enum format_t {hms, ms};
+  TimeStampedNote(int Time, const QString &Note);
+  QString toString(format_t f = hms);
 private:
-    QString Time_;
+    int Time_;
     QString Note_;
 };
 

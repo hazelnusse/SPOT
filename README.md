@@ -7,7 +7,7 @@
 
 2. Run the file you downloaded to install the Qt SDK.
 
-3. Download the .zip file for Spot
+3. Download the .zip file for SPOT
    [here](https://github.com/hazelnusse/SPOT/zipball/master "SPOT source code
    zipped")
 

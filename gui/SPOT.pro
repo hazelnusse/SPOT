@@ -1,14 +1,7 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2012-03-04T10:50:36
-#
-#-------------------------------------------------
+QT += widgets
 
-QT       += core gui
-
-TARGET = PFTF_Project
+TARGET = SPOT
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
       mainwindow.cpp \
@@ -30,3 +23,4 @@ HEADERS  += mainwindow.h \
     teacherdialog.h \
     configurationdialog.h \
     closedialog.h
+

@@ -1,0 +1,227 @@
+#!/usr/bin/env python
+import sys
+import matplotlib.pyplot as plt
+from matplotlib import font_manager as fm
+import numpy as np
+
+class segment(object):
+    def __init__(self, actions, colors):
+        assert len(actions) == len(colors)
+        if len(actions) != 0:
+            self.actions = actions
+            self.colors = colors
+        else:
+            self.actions=["default"]
+            self.colors=["r"]
+
+        self._left = {a : [] for a in actions}
+        self._width = {a : [] for a in actions}
+        self._color = {a : [] for a in actions}
+
+    def append(self, action, left, width):
+        if action not in self.actions:
+            raise KeyError
+
+        self._left[action].append(left)
+        self._width[action].append(width)
+        self._color[action].append(self.colors[self.actions.index(action)])
+
+    def left(self, action):
+        return self._left[action]
+
+    def width(self, action):
+        return self._width[action]
+
+    def color(self, action):
+        return self._color[action]
+        
+class InteractionsPlotter(object):
+    def __init__(self, filename):
+        self.f = self.convert_datafile(filename)
+        self.TotalTime()
+        self.TeacherTime()
+        self.StudentTime()
+
+    def convert_datafile(self, filename):
+        new_filename = filename[:-4] + "_time_in_ms.txt"
+        f_hms = open(filename)
+        f = open(new_filename, "w")
+        
+        # Get time at first interaction
+        hms, ia = f_hms.readline().split(" ")
+        h, m, s = hms.split(":")
+        ms_init = int(h)*60*60*1000 + int(m)*60*1000 + int(s)*1000
+        f.write(str(0) + ":" + ia)
+
+        for l in f_hms:
+            hms, ia = l.split(" ")
+            h, m, s = hms.split(":")
+            ms = int(h)*60*60*1000 + int(m)*60*1000 + int(s)*1000
+            f.write(str(ms - ms_init) + ":" + ia)
+
+        f_hms.close()
+        f.close()
+
+        return open(new_filename, "r")
+
+
+    def TotalTime(self):
+        T = segment(["E", "Q", "R", "W", "A"], colors=["#870000",
+            "#a50000", "#c30000", "#e10000", "#ff0000"])
+        S = segment(["Q", "C", "P"], colors=["#009F00", "#00CF00", "#00FF00"])
+        G = segment(["x"], colors=["#8F008F"])
+        A = segment(["R", "I"], colors=["#0000CF", "#0000FF"])
+
+        TSGA = {"T" : T, "S" : S, "G" : G, "A" : A}
+        
+        t_prev, ia_prev = self.f.readline().split(":")
+        t_prev = int(t_prev) / (1000.0 * 60.0)
+        for l in self.f:
+            t, ia = l.split(":")
+            t = int(t) / (1000.0 * 60.)
+            TSGA[ia_prev[0]].append(ia_prev[1], t_prev, t - t_prev)
+            t_prev = t
+            ia_prev = ia
+
+
+        names = ["All", "Group", "Student", "Teacher"]
+        N = 4
+        ind = np.arange(N) + 0.5
+        plt.figure("Total time", figsize=(9,9))
+        plt.subplot(111)
+
+        for i, Group in enumerate([A, G, S, T]):
+            for a in Group.actions:
+                plt.barh([ind[i]]*len(Group.left(a)), width=Group.width(a),
+                        height=1.0, linewidth=0,
+                        align="center", left=Group.left(a), color=Group.color(a))
+
+        plt.xticks(fontsize=18.0)
+        plt.yticks(ind, names, fontsize=18.0)
+        plt.title("Classroom time expenditure", fontsize=18.0)
+        plt.axis('tight')
+        plt.xlabel("Time [minutes]", fontsize=18.0)
+        self.f.seek(0)
+
+    def TeacherTime(self):
+        sumTE = 0.0
+        sumTQ = 0.0
+        sumTR = 0.0
+        sumTW = 0.0
+        sumTA = 0.0
+
+        t_prev, ia_prev = self.f.readline().split(":")
+        t_prev = int(t_prev)
+        for l in self.f:
+            t, ia = l.split(":")
+            t = int(t)
+            dt = t - t_prev
+            if ia_prev[0] == "T":
+                if ia_prev[1] == "E":
+                    sumTE += dt/1000.
+                elif ia_prev[1] == "Q":
+                    sumTQ += dt/1000.
+                elif ia_prev[1] == "R":
+                    sumTR += dt/1000.
+                elif ia_prev[1] == "W":
+                    sumTW += dt/1000.
+                elif ia_prev[1] == "A":
+                    sumTA += dt/1000.
+            t_prev = t
+            ia_prev = ia
+        
+        x = [sumTE, sumTQ, sumTR, sumTW, sumTA]
+        labels = ["Explaining", "Questioning", "Responding",
+                "Waiting", "Administrative"]
+        colors = ["#870000", "#a50000", "#c30000", "#e10000", "#ff0000"]
+        pcts = np.array(x) / sum(x)
+
+        # Remove any sums which are zero
+        flag = 1
+        while (flag == 1):
+            try:
+                i = x.index(0.0) 
+                x.pop(i)
+                labels.pop(i)
+                colors.pop(i)
+            except (ValueError):
+                flag = 0
+
+        plt.figure("Teacher time", figsize=(9,9))
+        plt.title(("Teacher time expenditure ({:.1%} of total class"+
+                  "time)").format(sum(x)/(t/1000.0)), fontsize=18.0)
+        patches, texts, autotexts = plt.pie(x, colors=colors, labels=labels, autopct="%0.2f%%")
+
+        proptease = fm.FontProperties()
+        proptease.set_size('large')
+        plt.setp(autotexts, fontproperties=proptease)
+        plt.setp(texts, fontproperties=proptease)
+        self.f.seek(0)
+
+    def StudentTime(self):
+        sumSQ = 0.0
+        sumSC = 0.0
+        sumSP = 0.0
+        sumAR = 0.0
+        sumAI = 0.0
+
+        t_prev, ia_prev = self.f.readline().split(":")
+        t_prev = int(t_prev)
+        for l in self.f:
+            t, ia = l.split(":")
+            t = int(t)
+            dt = t - t_prev
+            if ia_prev[0] == "S":
+                if ia_prev[1] == "Q":
+                    sumSQ += dt/1000.
+                elif ia_prev[1] == "C":
+                    sumSC += dt/1000.
+                elif ia_prev[1] == "P":
+                    sumSP += dt/1000.
+            elif ia_prev[0] == "A":
+                if ia_prev[1] == "R":
+                    sumAR += dt/1000.
+                if ia_prev[1] == "I":
+                    sumAI += dt/1000.
+            t_prev = t
+            ia_prev = ia
+        
+        x = [sumSQ, sumSC, sumSP, sumAR, sumAI]
+        labels = ["Questioning", "Contributing", "Presenting", "Responding", "Individually Working"]
+        colors = ["#009F00", "#00CF00", "#00FF00", "#0000CF", "#0000FF"]
+        pcts = np.array(x) / sum(x)
+
+        # Remove any sums which are zero
+        flag = 1
+        while (flag == 1):
+            try:
+                i = x.index(0.0) 
+                x.pop(i)
+                labels.pop(i)
+                colors.pop(i)
+            except (ValueError):
+                flag = 0
+
+
+        plt.figure("Student time", figsize=(9,9))
+        plt.title(("Student time expenditure ({:.1%} of total class"+
+                  "time)").format(sum(x)/(t/1000.0)), fontsize=18.0)
+        
+        patches, texts, autotexts = plt.pie(x, colors=colors, labels=labels, autopct="%0.2f%%")
+
+        proptease = fm.FontProperties()
+        proptease.set_size('large')
+        plt.setp(autotexts, fontproperties=proptease)
+        plt.setp(texts, fontproperties=proptease)
+
+
+        self.f.seek(0)
+
+    def showall(self):
+        plt.show()
+
+if __name__ == "__main__":
+    assert(len(sys.argv) == 2)
+    interactions_plots = InteractionsPlotter(sys.argv[1])
+    interactions_plots.showall()
+

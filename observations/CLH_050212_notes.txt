@@ -1,0 +1,27 @@
+12:05:08: room has moveable chairs; expect it will be more difficult to keep track of students
+12:11:58: it really helps to spend time before class in the room to memorize the rows and familiarize how it relates to the simple grid
+12:14:58: handing out worksheet, then doing practice exercieses "together"
+12:15:25: communicating the sense that they are all doing it "together" rather than her teaching them 
+12:19:00: important to be entirely focused on the class and not doing somethign else, even if seems like the instructor is just doing a long lecture, because at any time a student could raiser their hand and you don't want to miss who it is
+12:23:09: this ta is a very nice contrast to the TA on 430 - very different style
+12:23:36: these will be nice comparisons to show for the presentation
+12:33:19: decide how the layout of the room will be captured in the program
+12:35:00: for example, in this room, I'm bumping everyone to the front, so I just have to count back - the columns are more distinct than the rows
+12:35:13: in room teh other day, easier to keep trac of rows
+12:36:38: it's not clear to me how th epresenting is different from contributing
+12:37:42: I suppose contributing would be like an in a discussion when someone contributes ideas
+12:38:05: as this ta is asking students to tell the class what they wrote this should really all be 'presenting'
+12:38:42: **in documnetation need to clearly distinguish what each one does
+12:39:48: I'm not sure the reponse vs. explain categories are not as distinct
+12:39:52: they were with 430 ta
+12:40:43: **if the categories are too divided it will be harder to get consistent data between observers
+12:44:03: asking for open responses from students - these are 'contributions'
+12:45:11: Luke - now when you change what a student is doing (from contributing, to questioning, for example) the tally increases
+12:46:15: other things to look at - how often do students respond to students? 
+12:46:29: (are the students communicating with each other, or is all communication through the instructor?)
+12:49:26: ta always reponds to students
+12:49:33: doesn't ask for responses from other students
+12:51:54: could group explaining and responding into the same button
+12:54:36: 22 total students
+12:56:10: **add measure to reports: % of student contributions that are responded by students, % responded to by instructor
+12:57:28: ta taking 5 minute break - I'll leave now

@@ -228,7 +228,7 @@ QPushButton *MainWindow::currentButton()
     return currentInteractionButton;
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *)
 {
   CloseDialog *cd = new CloseDialog(notesFile->fileName(), interactionFile->fileName(), this);
   int num = cd->exec();

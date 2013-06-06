@@ -37,33 +37,10 @@ class segment(object):
         
 class InteractionsPlotter(object):
     def __init__(self, filename):
-        self.f = self.convert_datafile(filename)
+        self.f = open(filename, "r")
         self.TotalTime()
         self.TeacherTime()
         self.StudentTime()
-
-    def convert_datafile(self, filename):
-        new_filename = filename[:-4] + "_time_in_ms.txt"
-        f_hms = open(filename)
-        f = open(new_filename, "w")
-        
-        # Get time at first interaction
-        hms, ia = f_hms.readline().split(" ")
-        h, m, s = hms.split(":")
-        ms_init = int(h)*60*60*1000 + int(m)*60*1000 + int(s)*1000
-        f.write(str(0) + ":" + ia)
-
-        for l in f_hms:
-            hms, ia = l.split(" ")
-            h, m, s = hms.split(":")
-            ms = int(h)*60*60*1000 + int(m)*60*1000 + int(s)*1000
-            f.write(str(ms - ms_init) + ":" + ia)
-
-        f_hms.close()
-        f.close()
-
-        return open(new_filename, "r")
-
 
     def TotalTime(self):
         T = segment(["E", "Q", "R", "W", "A"], colors=["#870000",
@@ -78,6 +55,10 @@ class InteractionsPlotter(object):
         t_prev = int(t_prev) / (1000.0 * 60.0)
         for l in self.f:
             t, ia = l.split(":")
+            if t[0] == '#':
+                t = t_prev
+                break
+
             t = int(t) / (1000.0 * 60.)
             TSGA[ia_prev[0]].append(ia_prev[1], t_prev, t - t_prev)
             t_prev = t
@@ -114,6 +95,10 @@ class InteractionsPlotter(object):
         t_prev = int(t_prev)
         for l in self.f:
             t, ia = l.split(":")
+
+            if t[0] == '#':
+                t = t_prev
+                break
             t = int(t)
             dt = t - t_prev
             if ia_prev[0] == "T":
@@ -169,6 +154,9 @@ class InteractionsPlotter(object):
         t_prev = int(t_prev)
         for l in self.f:
             t, ia = l.split(":")
+            if t[0] == '#':
+                t = t_prev
+                break
             t = int(t)
             dt = t - t_prev
             if ia_prev[0] == "S":
